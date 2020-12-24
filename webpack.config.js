@@ -3,6 +3,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
 
 const dev = process.env.NODE_ENV === 'dev'
 
@@ -104,7 +106,7 @@ let config = {
       chunkFilename: dev ? '[id].css' : '[id].[contenthash].css'
     }),
     new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['**/*'], //, '!index.html'
+      cleanOnceBeforeBuildPatterns: ['**/*'], //'!excludeFile.html'
       verbose: true,
       dry: false
     }),
@@ -112,6 +114,11 @@ let config = {
       filename: 'index.html',
       template: './src/index.ejs'
     })
+    // new BundleAnalyzerPlugin({
+    //   analyzerPort: 8888,
+    //   openAnalyzer: false,
+    //   analyzerMode: dev?null:'static'
+    // })
   ],
   optimization: {
     minimize: dev ? false : true
