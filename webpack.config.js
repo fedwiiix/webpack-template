@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
 
@@ -11,7 +12,8 @@ const dev = process.env.NODE_ENV === 'dev'
 let config = {
   mode: dev ? 'development' : 'production',
   watch: false,
-  cache: false,
+  cache: !dev,
+  devtool: 'eval',
   entry: ['./src/style/index.scss', './src/index.js'],
   output: {
     filename: dev ? '[name].js' : '[name].[chunkhash].js',
@@ -36,16 +38,6 @@ let config = {
               removeComments: true
             }
           }
-        }
-      },
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
-        options: {
-          emitWarning: dev,
-          failOnWarning: !dev
         }
       },
       {
@@ -109,6 +101,10 @@ let config = {
       cleanOnceBeforeBuildPatterns: ['**/*'], //'!excludeFile.html'
       verbose: true,
       dry: false
+    }),
+    new ESLintPlugin({
+      emitWarning: dev,
+      failOnWarning: !dev
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
